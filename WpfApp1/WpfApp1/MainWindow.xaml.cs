@@ -28,10 +28,11 @@ namespace WpfApp1
         }
         Random rnd = new Random();
         int points = 1;
+        bool game = true;
         private int generateExample()
         {
             int sum = 0;             
-            if (points <= 10)
+            if (game == true & points <= 10)
             {
                 int num1 = 0;
                 int num2 = 0;
@@ -72,15 +73,19 @@ namespace WpfApp1
                         break;
                 }
                 string strpoints = points.ToString();
-                Level.Text = strpoints + "/10";
+                Level.Content = strpoints + "/10";
 
             }
-            else
+            else if(points >= 10)
             {
                 Question.Text = "You won";
+                Level.Content = "Congratulations!";
+                dt.Stop();
             }
             return sum;
         }
+        DispatcherTimer dt = new DispatcherTimer();
+        private int increment = 10;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string strsum = generateExample().ToString();
@@ -88,7 +93,7 @@ namespace WpfApp1
             {
                 points++;              
             }
-
+            increment = 11;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -98,9 +103,8 @@ namespace WpfApp1
             {
                 points++;
             }
-        }
-        private int increment = 10;
-        DispatcherTimer dt = new DispatcherTimer();
+            increment = 11;
+        }        
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {           
             dt.Interval = TimeSpan.FromSeconds(1);
@@ -110,17 +114,18 @@ namespace WpfApp1
 
         private void dtTicker(object sender, EventArgs e)
         {
-            if (increment <= 0)
+            if (increment == 1)
             {
                 dt.Stop();
                 Question.Text = "YOU LOST LOSER";
+                game = false;
+                Time.Content = "Time left: 0";
             }
             else
             {
                 increment--;
+                Time.Content = "Time left: " + increment.ToString();
             }            
-
-            Time.Content = "Time left: "+increment.ToString();
         }
     }
 }
