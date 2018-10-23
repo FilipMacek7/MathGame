@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace WpfApp1
 {
@@ -27,10 +28,9 @@ namespace WpfApp1
         }
         Random rnd = new Random();
         int points = 1;
-        int sum;
-
-        private void generateExample()
+        private int generateExample()
         {
+            int sum = 0;             
             if (points <= 10)
             {
                 int num1 = 0;
@@ -45,9 +45,7 @@ namespace WpfApp1
                     num1 = rnd.Next(0, 1000);
                     num2 = rnd.Next(0, 1000);
                 }
-                int sum = num1 + num2;
-                string numb1 = num1.ToString();
-                string numb2 = num2.ToString();
+                sum = num1 + num2;
                 int rndNumOper = rnd.Next(1, 6);
                 int rndOper = rnd.Next(1, 3);
                 int rndsumres = 0;
@@ -60,7 +58,7 @@ namespace WpfApp1
                         rndsumres = num1 + num2 - rndNumOper;
                         break;
                 }
-                Question.Text = numb1 + " + " + numb2 + "=";
+                Question.Text = num1.ToString() + " + " + num2.ToString() + "=";
                 int rndPos = rnd.Next(1, 3);
                 switch (rndPos)
                 {
@@ -75,31 +73,54 @@ namespace WpfApp1
                 }
                 string strpoints = points.ToString();
                 Level.Text = strpoints + "/10";
-               
+
             }
             else
             {
                 Question.Text = "You won";
             }
+            return sum;
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string strsum = sum.ToString();
+            string strsum = generateExample().ToString();
             if (Button1.Content.ToString() == strsum)
             {
-                points++;
+                points++;              
             }
 
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            string strsum = sum.ToString();
+            string strsum = generateExample().ToString();
             if (Button2.Content.ToString() == strsum)
             {
                 points++;
             }
+        }
+        private int increment = 10;
+        DispatcherTimer dt = new DispatcherTimer();
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {           
+            dt.Interval = TimeSpan.FromSeconds(1);
+            dt.Tick += dtTicker;
+            dt.Start();
+        }
+
+        private void dtTicker(object sender, EventArgs e)
+        {
+            if (increment <= 0)
+            {
+                dt.Stop();
+                Question.Text = "YOU LOST LOSER";
+            }
+            else
+            {
+                increment--;
+            }            
+
+            Time.Content = "Time left: "+increment.ToString();
         }
     }
 }
